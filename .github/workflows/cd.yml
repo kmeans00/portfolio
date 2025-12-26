@@ -36,6 +36,7 @@ jobs:
           context: .
           push: true
           tags: ${{ env.IMAGE_NAME }}
+          platforms: linux/amd64   # (권장) EC2 호환 고정
 
       - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -48,7 +49,6 @@ jobs:
 
             IMAGE="${{ env.IMAGE_NAME }}"
 
-            # EC2에서 GHCR 로그인 (PAT 필요)
             echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ secrets.GHCR_USER }}" --password-stdin
 
             docker pull "$IMAGE"
@@ -58,6 +58,7 @@ jobs:
             docker run -d --name portfolio \
               -p 3000:3000 \
               -e PORTFOLIO_DATA_PATH=/app/data/portfolio.json \
+              -e UPLOAD_DIR=/app/public/uploads \
               -v /srv/portfolio/public/uploads:/app/public/uploads \
               -v /srv/portfolio/data:/app/data \
               --restart unless-stopped \

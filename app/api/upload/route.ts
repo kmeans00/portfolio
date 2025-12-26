@@ -13,6 +13,14 @@ function detectFolder(mime: string) {
   return "files"
 }
 
+function getUploadBaseDir() {
+  // 1) 배포환경: UPLOAD_DIR=/app/public/uploads 로 주면 그 경로 사용
+  // 2) 로컬환경: 기본값 public/uploads
+  return process.env.UPLOAD_DIR
+    ? path.resolve(process.env.UPLOAD_DIR)
+    : path.join(process.cwd(), "public", "uploads")
+}
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
@@ -24,8 +32,8 @@ export async function POST(request: NextRequest) {
 
     const folder = detectFolder(file.type)
 
-    // 프로젝트 내부 public/uploads 에 저장
-    const baseDir = path.join(process.cwd(), "public", "uploads")
+    // 업로드 루트 (환경변수 기반)
+    const baseDir = getUploadBaseDir()
     const uploadDir = path.join(baseDir, folder)
     await mkdir(uploadDir, { recursive: true })
 
@@ -38,6 +46,7 @@ export async function POST(request: NextRequest) {
     const savedPath = path.join(uploadDir, safeName)
     await writeFile(savedPath, buffer)
 
+    // URL은 무조건 Next 정적 경로로 접근 가능하게 /uploads/... 유지
     return NextResponse.json({
       url: `/uploads/${folder}/${safeName}`,
       originalName: file.name,
