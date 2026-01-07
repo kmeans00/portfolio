@@ -63,7 +63,6 @@ jobs:
               -p 3000:3000 \
               -e PORTFOLIO_DATA_PATH=/app/data/portfolio.json \
               -e UPLOAD_DIR=/app/public/uploads \
-              -e NODE_OPTIONS="--network-family-autofit --dns-result-order=ipv4first" \
               -v /home/ubuntu/uploads:/app/public/uploads \
               -v /home/ubuntu/data:/app/data \
               --restart unless-stopped \
