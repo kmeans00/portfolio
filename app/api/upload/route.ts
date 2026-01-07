@@ -1,12 +1,13 @@
-// app/api/upload/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import fs from "fs";
 
+// App Router에서는 아래와 같이 용량 제한을 설정하지 않아도 되지만,
+// 런타임 환경에 따라 필요할 수 있습니다. (기본적으로는 Nginx 설정이 더 중요합니다)
+
 export async function POST(request: NextRequest) {
   try {
-    // 🚩 핵심: 파일 업로드는 request.json()이 아니라 formData()를 써야 합니다.
     const formData = await request.formData();
     const file = formData.get("file") as File;
 
@@ -14,25 +15,30 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "파일이 없습니다." }, { status: 400 });
     }
 
-    // 1. 저장 경로 설정 (public/uploads)
+    // 1. 저장 경로 설정
     const uploadDir = path.join(process.cwd(), "public", "uploads");
 
-    // 2. uploads 폴더가 없으면 생성
+    // 2. 폴더 생성
     if (!fs.existsSync(uploadDir)) {
       await mkdir(uploadDir, { recursive: true });
     }
 
-    // 3. 파일명 생성 (중복 방지를 위해 타임스탬프 추가)
+    // 3. 🔥 파일명 개선 (한글/공백 문제 해결)
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    const filename = `${uniqueSuffix}-${file.name}`;
+
+    // 파일 확장자만 추출 (예: .mp4, .jpg)
+    const ext = path.extname(file.name);
+
+    // 파일명을 [타임스탬프].[확장자] 형태로 변경 (한글 아예 제거)
+    const filename = `${uniqueSuffix}${ext}`;
     const filePath = path.join(uploadDir, filename);
 
-    // 4. 파일을 Buffer로 변환하여 저장
+    // 4. 파일 저장
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     await writeFile(filePath, buffer);
 
-    // 5. 클라이언트에서 접근 가능한 URL 반환
+    // 5. 성공 응답
     const fileUrl = `/uploads/${filename}`;
 
     return NextResponse.json({
@@ -42,6 +48,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error("파일 업로드 에러:", error);
+    // ECONNRESET 에러가 여기서 찍힌다면 Nginx의 타임아웃 설정을 더 늘려야 합니다.
     return NextResponse.json({ error: "서버에 파일 저장 실패" }, { status: 500 });
   }
 }

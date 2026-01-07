@@ -8,7 +8,7 @@ import { AuthGuard } from "@/components/auth-guard"
 interface ProfileData {
   name: string; title: string; email: string; phone: string;
   location: string; birthdate: string; bio: string;
-  skills: string; github: string; linkedin: string; profileImage: string;
+  skills: string; github: string; linkedin: string; profileImage?: string;
 }
 
 // 🚩 중요: 초기값을 null 대신 아래 기본 객체로 설정합니다.
