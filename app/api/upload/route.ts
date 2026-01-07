@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
+import { mkdir } from "fs/promises";
 import path from "path";
-import fs from "fs";
-
-// App Router에서는 아래와 같이 용량 제한을 설정하지 않아도 되지만,
-// 런타임 환경에 따라 필요할 수 있습니다. (기본적으로는 Nginx 설정이 더 중요합니다)
+import fs, { createWriteStream } from "fs"; // createWriteStream 추가
+import { Readable } from "stream"; // Readable 추가
+import { finished } from "stream/promises"; // finished 추가
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,20 +22,21 @@ export async function POST(request: NextRequest) {
       await mkdir(uploadDir, { recursive: true });
     }
 
-    // 3. 🔥 파일명 개선 (한글/공백 문제 해결)
+    // 3. 파일명 개선 (기존 로직 유지 - 아주 좋습니다!)
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-
-    // 파일 확장자만 추출 (예: .mp4, .jpg)
     const ext = path.extname(file.name);
-
-    // 파일명을 [타임스탬프].[확장자] 형태로 변경 (한글 아예 제거)
     const filename = `${uniqueSuffix}${ext}`;
     const filePath = path.join(uploadDir, filename);
 
-    // 4. 파일 저장
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(filePath, buffer);
+    // 4. 🔥 [수정] 메모리 아끼는 스트리밍 방식으로 파일 저장
+    // file.arrayBuffer() 대신 file.stream()을 사용하여 데이터를 조각 단위로 처리합니다.
+    const stream = Readable.fromWeb(file.stream() as any);
+
+    // 하드디스크에 바로 쓸 수 있는 통로(writeStream)를 엽니다.
+    const writeStream = createWriteStream(filePath);
+
+    // 스트림을 연결(pipe)하고 저장이 완전히 끝날 때까지(finished) 기다립니다.
+    await finished(stream.pipe(writeStream));
 
     // 5. 성공 응답
     const fileUrl = `/uploads/${filename}`;
@@ -48,7 +48,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error("파일 업로드 에러:", error);
-    // ECONNRESET 에러가 여기서 찍힌다면 Nginx의 타임아웃 설정을 더 늘려야 합니다.
     return NextResponse.json({ error: "서버에 파일 저장 실패" }, { status: 500 });
   }
 }

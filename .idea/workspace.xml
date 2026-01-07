@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c5b70ab6-d189-4467-b78a-0fb794cb7169" name="변경" comment="">
+    <list default="true" id="c5b70ab6-d189-4467-b78a-0fb794cb7169" name="변경" comment="ngnix 적용">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/upload/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/upload/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,11 +77,24 @@
       <workItem from="1767767406443" duration="31000" />
       <workItem from="1767767455999" duration="20000" />
       <workItem from="1767767556727" duration="86000" />
-      <workItem from="1767767648350" duration="2062000" />
+      <workItem from="1767767648350" duration="2717000" />
     </task>
+    <task id="LOCAL-00001" summary="ngnix 적용">
+      <option name="closed" value="true" />
+      <created>1767772252141</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1767772252141</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="ngnix 적용" />
+    <option name="LAST_COMMIT_MESSAGE" value="ngnix 적용" />
   </component>
 </project>
