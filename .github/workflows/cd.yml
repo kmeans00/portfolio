@@ -36,7 +36,7 @@ jobs:
           context: .
           push: true
           tags: ${{ env.IMAGE_NAME }}
-          platforms: linux/amd64   # (권장) EC2 호환 고정
+          platforms: linux/amd64
 
       - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -49,19 +49,25 @@ jobs:
 
             IMAGE="${{ env.IMAGE_NAME }}"
 
+            # 1. 로그인
             echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ secrets.GHCR_USER }}" --password-stdin
 
+            # 2. 최신 이미지 가져오기
             docker pull "$IMAGE"
 
+            # 3. 기존 컨테이너 중지 및 삭제
             docker rm -f portfolio 2>/dev/null || true
 
+            # 4. 컨테이너 실행 (볼륨 경로를 /home/ubuntu 로 수정)
             docker run -d --name portfolio \
               -p 3000:3000 \
               -e PORTFOLIO_DATA_PATH=/app/data/portfolio.json \
               -e UPLOAD_DIR=/app/public/uploads \
-              -v /srv/portfolio/public/uploads:/app/public/uploads \
-              -v /srv/portfolio/data:/app/data \
+              -e NODE_OPTIONS="--network-family-autofit --dns-result-order=ipv4first" \
+              -v /home/ubuntu/uploads:/app/public/uploads \
+              -v /home/ubuntu/data:/app/data \
               --restart unless-stopped \
               "$IMAGE"
 
+            # 5. 안 쓰는 이미지 정리
             docker image prune -f
