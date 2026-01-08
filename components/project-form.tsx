@@ -142,6 +142,15 @@ export function ProjectForm({ initialData, onSave, onCancel }: ProjectFormProps)
           </div>
 
           <div>
+            <label className="mb-1 block text-sm font-medium text-muted-foreground">GitHub 저장소 URL</label>
+            <Input
+                value={formData.githubUrl}
+                onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })}
+                placeholder="https://github.com/username/project"
+            />
+          </div>
+
+          <div>
             <label className="mb-1 flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <Upload className="h-4 w-4" />
               프로젝트 이미지
