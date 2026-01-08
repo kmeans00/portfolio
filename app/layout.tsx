@@ -7,26 +7,19 @@ import "./globals.css"
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
+// 1. 이 부분을 본인 정보로 수정했습니다.
 export const metadata: Metadata = {
-  title: "개발자 포트폴리오",
-  description: "개발자 포트폴리오 사이트",
+  title: "KMS | Backend Developer Portfolio", // 브라우저 탭에 뜰 이름
+  description: "안정적인 인프라를 지향하는 개발자 KMS입니다.",
   generator: "v0.app",
   icons: {
     icon: [
       {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
+        url: "/icon.svg", // 우리가 새로 만들 로고 파일 이름
         type: "image/svg+xml",
       },
     ],
-    apple: "/apple-icon.png",
+    apple: "/icon.svg",
   },
 }
 
