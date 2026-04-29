@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="c5b70ab6-d189-4467-b78a-0fb794cb7169" name="변경" comment="아이콘 변경">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/project-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/project-form.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
