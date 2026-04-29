@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Pencil, Check, X, Github, Linkedin, User, Upload } from "lucide-react"
 
+// 변경
+
 interface ProfileData {
   name: string
   title: string
